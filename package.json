@@ -1,20 +1,19 @@
 {
   "name": "picgo-plugin-github-plus",
   "version": "1.0.0",
-  "description": "github-plus",
+  "description": "picgo uploader for github",
   "gui": true,
   "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "lib"
+  ],
   "homepage": "",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "tsc -w -p .",
-    "test": "nodemon dist/lib/listFiles.js",
-    "patch": "npm version patch && git push origin master && git push origin --tags",
-    "minor": "npm version minor && git push origin master && git push origin --tags",
-    "major": "npm version major && git push origin master && git push origin --tags"
+    "dev": "tsc -w -p ."
   },
   "keywords": [
     "picgo",
@@ -24,12 +23,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.10.1",
-    "eslint": "^5.0.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
     "picgo": "^1.2.1",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.1.0",

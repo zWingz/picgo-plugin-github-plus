@@ -15,20 +15,17 @@ export function zip (img: ImgType): ImgZipType {
 }
 
 export function unzip (
-  img: ImgZipType,
-  { type, domain, owner, repo, branch, path }
+  img: ImgZipType
 ): ImgType {
   const { f: fileName, w: width, h: height, id } = img
   const extname = fileName.split('.').slice(-1)[0]
-  const str = domain || 'https://raw.githubusercontent.com'
-  const imgUrl = join(str, owner, repo, branch, path, fileName)
   return {
     fileName,
     width,
     height,
     id,
     extname,
-    imgUrl,
-    type
+    imgUrl: '',
+    type: ''
   }
 }

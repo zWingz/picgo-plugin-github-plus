@@ -1,16 +1,10 @@
 import picgo from 'picgo'
 import { Notification } from 'electron'
-import {
-  getDataJson,
-  upload,
-  authenticate,
-  updateDataJson,
-  createDataJson
-} from './lib/octokit'
+import { getIns } from './lib/octokit'
 import { join } from 'path'
 import { PluginConfig } from 'picgo/dist/utils/interfaces'
 import { getNow, zip, unzip } from './lib/helper'
-import { ImgType } from './lib/interface'
+import { ImgType, PluginConfig as PlusConfig } from './lib/interface'
 const PluginName = 'picgo-plugin-github-plus'
 const UploaderName = 'githubPlus'
 function notic (title, body?: string) {
@@ -26,20 +20,14 @@ const guiMenu = (ctx: picgo) => {
     {
       label: 'Sync github',
       async handle (ctx: picgo) {
-        const options = ctx.getConfig('picBed.githubPlus')
-        // do something for uploading
+        const options: PlusConfig = ctx.getConfig('picBed.githubPlus')
         if (!options) {
           throw new Error("Can't find github-plus config")
         }
-        const { path, branch, token } = options
-        const [owner, repo] = options.repo.split('/')
         notic('Sync...')
-        authenticate(token)
-        const githubDataJson = await getDataJson({
-          owner,
-          branch,
-          repo
-        }).catch(e => {
+        const octokit = getIns(options)
+        octokit.authenticate()
+        const githubDataJson = await octokit.getDataJson().catch(e => {
           notic('Error in load dataJson', e.message)
           throw e
         })
@@ -52,17 +40,12 @@ const guiMenu = (ctx: picgo) => {
         if (localDataJson.lastSync > lastSync) {
           try {
             if (sha) {
-              await updateDataJson(
-                {
-                  owner,
-                  repo,
-                  branch,
-                  sha
-                },
-                localDataJson
-              )
+              await octokit.updateDataJson({
+                data: localDataJson,
+                sha
+              })
             } else {
-              await createDataJson({ owner, repo, branch }, localDataJson)
+              await octokit.createDataJson(localDataJson)
             }
           } catch (e) {
             notic('Error in sync github', e.message)
@@ -70,16 +53,14 @@ const guiMenu = (ctx: picgo) => {
           }
         } else {
           const newUploaded = data
-            .map(each =>
-              unzip(each, {
-                type: PluginName,
-                domain: '',
-                owner,
-                repo,
-                branch,
-                path
-              })
-            )
+            .map(each => {
+              const obj = unzip(each)
+              return {
+                ...obj,
+                type: UploaderName,
+                imgUrl: octokit.parseUrl(obj.fileName)
+              }
+            })
             .concat(uploaded.filter(each => each.type !== UploaderName))
           ctx.saveConfig({
             uploaded: newUploaded,
@@ -95,38 +76,23 @@ const guiMenu = (ctx: picgo) => {
 }
 
 const handle = async (ctx: picgo) => {
-  const options = ctx.getConfig('picBed.githubPlus')
+  const options: PlusConfig = ctx.getConfig('picBed.githubPlus')
   let output = ctx.output
   // do something for uploading
   if (!options) {
     throw new Error("Can't find github-plus config")
   }
-  const { path, branch, token } = options
-  const [owner, repo] = options.repo.split('/')
-  if (!repo) {
-    throw new Error('Repo error in github-plus config')
-  }
-  authenticate(token)
+  const octokit = getIns(options)
+  octokit.authenticate()
   for (let i in output) {
     try {
       const img = output[i]
-      const downloadUrl = await upload(
-        {
-          owner,
-          repo,
-          branch,
-          content:
-            img.base64Image || Buffer.from(img.buffer).toString('base64'),
-          path: join(path, img.fileName),
-          message: `Upload ${img.fileName} by picGo - ${getNow()}`
-        },
-        ctx
-      )
+      const downloadUrl = await octokit.upload(img)
       img.imgUrl = downloadUrl
     } catch (e) {
       ctx.emit('notification', {
         title: 'GithubPlus: 上传失败',
-        body: `${e.message}`,
+        body: e.message,
         text: ''
       })
     }
@@ -136,11 +102,6 @@ const handle = async (ctx: picgo) => {
       lastSync: getNow()
     }
   })
-  // ctx.emit('notification', {
-  //   title: 'GithubPlus: 上传成功',
-  //   body: `已成功上传${output.length}张图片`,
-  //   text: ''
-  // })
   return ctx
 }
 
@@ -160,7 +121,7 @@ const config = (ctx: picgo): PluginConfig[] => {
       name: 'branch',
       type: 'input',
       default: userConfig.branch || 'master',
-      required: true
+      required: false
     },
     {
       name: 'token',
@@ -172,6 +133,12 @@ const config = (ctx: picgo): PluginConfig[] => {
       name: 'path',
       type: 'input',
       default: userConfig.path || '',
+      required: false
+    },
+    {
+      name: 'customUrl',
+      type: 'input',
+      default: userConfig.customUrl || '',
       required: false
     }
   ]
