@@ -1,6 +1,6 @@
 import Octokit from '@octokit/rest'
 import { getNow } from './helper'
-import { ImgType, PluginConfig } from './interface'
+import { PluginConfig } from './interface'
 import { join } from 'path'
 
 // export default octokit

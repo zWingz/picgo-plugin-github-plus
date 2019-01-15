@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { ImgType, ImgZipType } from './interface'
-import { join } from 'path'
 export function getNow () {
   return dayjs().format('YYYY-MM-DD hh:mm:ss')
 }
