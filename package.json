@@ -23,7 +23,8 @@
   },
   "keywords": [
     "picgo",
-    "picgo-plugin"
+    "picgo-plugin",
+    "picgo-gui-plugin"
   ],
   "author": "zhengzwing@gmail.com",
   "license": "MIT",
