@@ -1,7 +1,8 @@
 import Octokit from '@octokit/rest'
 import { getNow } from './helper'
-import { PluginConfig } from './interface'
+import { PluginConfig, ImgType } from './interface'
 import { join } from 'path'
+import { ImgInfo } from 'picgo/dist/utils/interfaces'
 
 // export default octokit
 
@@ -87,7 +88,7 @@ class Octo {
     return defaultRet
   }
 
-  async upload (img) {
+  async upload (img: ImgInfo) {
     const { owner, repo, branch, path = '' } = this
     const { fileName } = img
     const d = await this.octokit.repos.createFile({
@@ -99,9 +100,20 @@ class Octo {
       branch
     })
     if (d) {
-      return this.parseUrl(fileName)
+      return {
+        imgUrl: this.parseUrl(fileName),
+        sha: d.data.content.sha
+      }
     }
     throw d
+  }
+  removeFile (img: ImgType) {
+    const { repo, path, owner, branch } = this
+    return this.octokit.repos.deleteFile({
+      repo,owner,path, branch,
+      message: `Deleted ${img.fileName} by picGo - ${getNow()}`,
+      sha: img.sha
+    })
   }
   parseUrl (fileName) {
     const { repo, path, customUrl } = this

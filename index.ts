@@ -86,8 +86,9 @@ const handle = async (ctx: picgo) => {
   for (let i in output) {
     try {
       const img = output[i]
-      const downloadUrl = await octokit.upload(img)
-      img.imgUrl = downloadUrl
+      const { imgUrl, sha } = await octokit.upload(img)
+      img.imgUrl = imgUrl
+      img.sha = sha
     } catch (e) {
       ctx.emit('notification', {
         title: 'GithubPlus: 上传失败',
@@ -102,6 +103,10 @@ const handle = async (ctx: picgo) => {
     }
   })
   return ctx
+}
+
+function onRemove (files: ImgType[]) {
+  notic('fdsa', '' + files[0].sha)
 }
 
 const config = (ctx: picgo): PluginConfig[] => {
@@ -165,6 +170,7 @@ export = (ctx: picgo) => {
     // if (!githubPlus.token) return
     // authenticate(githubPlus.token)
     ctx.helper.uploader.register(UploaderName, { handle, config })
+    ctx.on('remove', onRemove)
   }
   return {
     register,
