@@ -1,7 +1,6 @@
 import picgo from 'picgo'
 import { Notification } from 'electron'
 import { getIns } from './lib/octokit'
-import { join } from 'path'
 import { PluginConfig } from 'picgo/dist/utils/interfaces'
 import { getNow, zip, unzip } from './lib/helper'
 import { ImgType, PluginConfig as PlusConfig } from './lib/interface'

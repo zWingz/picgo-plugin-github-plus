@@ -26,7 +26,6 @@ class Octo {
   authenticate () {
     this.octokit.authenticate({
       type: 'token',
-      // token: 'd#e8919195a05bd0c3e3c0d5b5bcfd218bc606694'.split('#').join(''),
       token: this.token
     })
   }
