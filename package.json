@@ -1,6 +1,6 @@
 {
   "name": "picgo-plugin-github-plus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "picgo uploader for github",
   "gui": true,
   "main": "dist/index.js",
