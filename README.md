@@ -1,5 +1,7 @@
 # picgo-plugin-github-plus
 
+plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
+
 - Sync `uploaded` with github use `data.json`
 - Can't edit `pluginc-config.lastSync`
 - Not support `remove` action
