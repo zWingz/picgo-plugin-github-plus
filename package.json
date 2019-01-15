@@ -1,6 +1,6 @@
 {
   "name": "picgo-plugin-github-plus",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "picgo uploader for github",
   "gui": true,
   "main": "dist/index.js",
@@ -10,10 +10,15 @@
   "files": [
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zWingz/picgo-plugin-github-plus"
+  },
   "homepage": "",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "tsc -w -p ."
+    "dev": "tsc -w -p .",
+    "pub": "yarn build && release-it"
   },
   "keywords": [
     "picgo",
@@ -33,6 +38,7 @@
     "axios": "^0.18.0",
     "dayjs": "^1.8.0",
     "electron": "^4.0.1",
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "release-it": "^9.8.1"
   }
 }
