@@ -10,8 +10,8 @@ export type ImgType = {
   fileName: string;
   extname: string;
   imgUrl: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   type: string;
   id: string;
   sha?: string
@@ -19,8 +19,8 @@ export type ImgType = {
 
 export type ImgZipType = {
   f: string,
-  w: number,
-  h: number,
+  w?: number,
+  h?: number,
   id: string,
   s?: string
 }
