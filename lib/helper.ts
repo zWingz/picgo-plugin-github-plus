@@ -9,20 +9,22 @@ export function zip (img: ImgType): ImgZipType {
     f: img.fileName,
     w: img.width,
     h: img.height,
-    id: img.id
+    id: img.id,
+    s: img.sha
   }
 }
 
 export function unzip (
   img: ImgZipType
 ): ImgType {
-  const { f: fileName, w: width, h: height, id } = img
+  const { f: fileName, w: width, h: height, id, s } = img
   const extname = fileName.split('.').slice(-1)[0]
   return {
     fileName,
     width,
     height,
     id,
+    sha: s,
     extname,
     imgUrl: '',
     type: ''

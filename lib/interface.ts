@@ -14,11 +14,13 @@ export type ImgType = {
   height: number;
   type: string;
   id: string;
+  sha?: string
 }
 
 export type ImgZipType = {
   f: string,
   w: number,
   h: number,
-  id: string
+  id: string,
+  s?: string
 }
