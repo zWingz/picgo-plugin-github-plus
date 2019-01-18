@@ -105,8 +105,40 @@ const handle = async (ctx: picgo) => {
   return ctx
 }
 
-function onRemove (files: ImgType[]) {
-  notic('fdsa', '' + files[0].sha)
+async function onRemove (files: ImgType[]) {
+  // console.log('1111 =?', this)
+  const rms = files.filter(each => each.type === UploaderName)
+  if (rms.length === 0) return
+  const self: picgo = this
+  const options: PlusConfig = self.getConfig('picBed.githubPlus')
+  if (!options) {
+    notic('Error', "Can't find github-plus config")
+    return
+  }
+  const ins = getIns(options)
+  ins.authenticate()
+  const fail = []
+  for (let i = 0; i < rms.length; i++) {
+    const each = rms[i]
+    await ins.removeFile(each).catch(() => {
+      fail.push(each)
+    })
+  }
+  if (fail.length) {
+    // 确保主线程已经把文件从data.json删掉
+    const uploaded: ImgType[] = self.getConfig('uploaded')
+    uploaded.unshift(...fail)
+    self.saveConfig({
+      uploaded,
+      [PluginName]: {
+        lastSync: getNow()
+      }
+    })
+  }
+  notic(
+    '删除提示',
+    fail.length === 0 ? '成功同步删除' : `删除失败${fail.length}个`
+  )
 }
 
 const config = (ctx: picgo): PluginConfig[] => {

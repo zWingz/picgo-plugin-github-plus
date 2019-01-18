@@ -110,8 +110,9 @@ class Octo {
   removeFile (img: ImgType) {
     const { repo, path, owner, branch } = this
     return this.octokit.repos.deleteFile({
-      repo,owner,path, branch,
-      message: `Deleted ${img.fileName} by picGo - ${getNow()}`,
+      repo,owner, branch,
+      path: path + img.fileName,
+      message: `Deleted ${img.fileName} by PicGo - ${getNow()}`,
       sha: img.sha
     })
   }
