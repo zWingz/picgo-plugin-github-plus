@@ -3,8 +3,10 @@
 plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 
 - Sync `uploaded` with github use `data.json`
-- Can't edit `pluginc-config.lastSync`
-- Not support `remove` action
+- Sync `remove` action
+- Pull `img` from github
+
+**Don't edit `lastSync`**
 
 ## Usage
 
@@ -16,6 +18,11 @@ plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 - path: file path
 - customUrl: used to insead of `https://raw.githubusercontent.com`, eg: `${customUrl}/repoName/path/filename.jpg`
 
-#### CustomUrl
+#### config.CustomUrl
 
   you need to open `gh-pages` at `mater` to support `customUrl`
+
+### Menu
+
+- Sync github: sync `data.json` (sync `latest update`)
+- Pull github: Pull `img` from github (**force** and **ignore** local `data.json`)
