@@ -11,7 +11,6 @@ const PluginName = 'picgo-plugin-github-plus'
 const UploaderName = 'githubPlus'
 
 function initOcto (ctx: picgo) {
-  console.log('init')
   const options: PlusConfig = ctx.getConfig('picBed.githubPlus')
   if (!options) {
     throw new Error("Can't find github-plus config")
@@ -32,11 +31,10 @@ function notic (title, body?: string) {
 const SyncGithubMenu = {
   label: 'Sync github',
   async handle (ctx: picgo) {
-    console.log('handle')
     const octokit = initOcto(ctx)
-    notic('Sync...')
+    notic('Sync github...')
     const githubDataJson = await octokit.getDataJson().catch(e => {
-      notic('Error in load dataJson', e.message)
+      notic('Error at load dataJson', e.message)
       throw e
     })
     const uploaded: ImgType[] = ctx.getConfig('uploaded')
@@ -56,7 +54,7 @@ const SyncGithubMenu = {
           await octokit.createDataJson(localDataJson)
         }
       } catch (e) {
-        notic('Error in sync github', e.message)
+        notic('Error at sync github', e.message)
         throw e
       }
     } else {
@@ -77,7 +75,7 @@ const SyncGithubMenu = {
         }
       })
     }
-    notic('Sync succeed', 'Succeed to sync github')
+    notic('Sync successful', 'Succeed to sync github')
   }
 }
 
@@ -85,29 +83,40 @@ const PullGithubMenu = {
   label: 'Pull github',
   handle: async (ctx: picgo) => {
     const octokit = initOcto(ctx)
-    notic('Pull...')
-    const { tree } = await octokit.getPathTree()
-    const imgList: ImgType[] = tree
-      .filter(each => /\.(jpg|png)$/.test(each.path))
-      .map(each => {
-        return unzip({
-          f: each.path,
-          id: each.sha
+    notic('Pull img from github...')
+    try {
+      const { tree } = await octokit.getPathTree()
+      const imgList: ImgType[] = tree
+        .filter(each => /\.(jpg|png)$/.test(each.path))
+        .map(each => {
+          const unzipImg = unzip({
+            f: each.path,
+            id: each.sha,
+            s: each.sha
+          })
+          return {
+            ...unzipImg,
+            type: UploaderName,
+            imgUrl: octokit.parseUrl(each.path)
+          }
         })
+      const uploaded: ImgType[] = ctx.getConfig('uploaded').filter(each => each.type !== UploaderName)
+      uploaded.unshift(...imgList)
+      ctx.saveConfig({
+        uploaded,
+        [PluginName]: {
+          lastSync: getNow()
+        }
       })
-    const uploaded: ImgType[] = ctx.getConfig('uploaded').filter(each => each.type !== UploaderName)
-    uploaded.unshift(...imgList)
-    ctx.saveConfig({
-      uploaded,
-      [PluginName]: {
-        lastSync: getNow()
-      }
-    })
+      notic('Pull successful', 'Succeed to pull from github')
+    } catch (e) {
+      notic('Error at pull from github', e.message)
+    }
   }
 }
 
-const guiMenu = () => {
-  return [SyncGithubMenu]
+const guiMenu = (ctx) => {
+  return [SyncGithubMenu, PullGithubMenu]
 }
 
 const handle = async (ctx: picgo) => {
