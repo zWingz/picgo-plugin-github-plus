@@ -20,7 +20,8 @@
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
     "clean": "rm -rf dist",
-    "pub": "yarn clean && yarn build && release-it"
+    "pub": "yarn clean && yarn build && release-it",
+    "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "keywords": [
     "picgo",
