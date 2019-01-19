@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
-    "pub": "yarn build && release-it"
+    "clean": "rm -rf dist",
+    "pub": "yarn clean && yarn build && release-it"
   },
   "keywords": [
     "picgo",
