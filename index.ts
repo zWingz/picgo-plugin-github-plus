@@ -5,13 +5,13 @@ import { PluginConfig } from 'picgo/dist/utils/interfaces'
 import { getNow, zip, unzip } from './lib/helper'
 import {
   ImgType,
-  PluginConfig as PlusConfig,
-  ImgZipType
+  PluginConfig as PlusConfig
 } from './lib/interface'
 const PluginName = 'picgo-plugin-github-plus'
 const UploaderName = 'githubPlus'
 
 function initOcto (ctx: picgo) {
+  console.log('init')
   const options: PlusConfig = ctx.getConfig('picBed.githubPlus')
   if (!options) {
     throw new Error("Can't find github-plus config")
@@ -32,6 +32,7 @@ function notic (title, body?: string) {
 const SyncGithubMenu = {
   label: 'Sync github',
   async handle (ctx: picgo) {
+    console.log('handle')
     const octokit = initOcto(ctx)
     notic('Sync...')
     const githubDataJson = await octokit.getDataJson().catch(e => {
@@ -86,7 +87,6 @@ const PullGithubMenu = {
     const octokit = initOcto(ctx)
     notic('Pull...')
     const { tree } = await octokit.getPathTree()
-    // TODO: transform github obj to imgType
     const imgList: ImgType[] = tree
       .filter(each => /\.(jpg|png)$/.test(each.path))
       .map(each => {
@@ -95,12 +95,19 @@ const PullGithubMenu = {
           id: each.sha
         })
       })
-    // const tree =
+    const uploaded: ImgType[] = ctx.getConfig('uploaded').filter(each => each.type !== UploaderName)
+    uploaded.unshift(...imgList)
+    ctx.saveConfig({
+      uploaded,
+      [PluginName]: {
+        lastSync: getNow()
+      }
+    })
   }
 }
 
 const guiMenu = () => {
-  return [SyncGithubMenu, PullGithubMenu]
+  return [SyncGithubMenu]
 }
 
 const handle = async (ctx: picgo) => {

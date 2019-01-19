@@ -2,6 +2,7 @@ import Octokit from '@octokit/rest'
 import { getNow } from './helper'
 import { PluginConfig, ImgType } from './interface'
 import { join } from 'path'
+import urlJoin from 'url-join'
 import { ImgInfo } from 'picgo/dist/utils/interfaces'
 
 // export default octokit
@@ -144,7 +145,7 @@ class Octo {
   parseUrl (fileName) {
     const { repo, path, customUrl } = this
     const domain = customUrl || 'https://raw.githubusercontent.com'
-    return join(domain, repo, path, fileName)
+    return urlJoin(domain, repo, path, fileName)
   }
 }
 
