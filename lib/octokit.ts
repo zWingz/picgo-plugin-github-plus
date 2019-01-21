@@ -143,9 +143,11 @@ class Octo {
     })
   }
   parseUrl (fileName) {
-    const { repo, path, customUrl } = this
-    const domain = customUrl || 'https://raw.githubusercontent.com'
-    return urlJoin(domain, repo, path, fileName)
+    const { owner, repo, path, customUrl, branch } = this
+    if (customUrl) {
+      return urlJoin(customUrl, repo, path, fileName)
+    }
+    return urlJoin(`https://raw.githubusercontent.com/`, owner, repo, branch, path, fileName)
   }
 }
 
