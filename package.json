@@ -28,7 +28,7 @@
     "picgo-plugin",
     "picgo-gui-plugin"
   ],
-  "author": "zhengzwing@gmail.com",
+  "author": "zzwing <zhengzwing@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.10.1",
