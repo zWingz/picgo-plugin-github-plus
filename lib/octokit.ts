@@ -4,8 +4,12 @@ import { PluginConfig, ImgType } from './interface'
 import { join } from 'path'
 import urlJoin from 'url-join'
 import { ImgInfo } from 'picgo/dist/utils/interfaces'
-
+import slash from 'slash'
 // export default octokit
+
+function pathJoin (...arg) {
+  return slash(join.apply(null, arg))
+}
 
 class Octo {
   owner: string = ''
@@ -95,7 +99,7 @@ class Octo {
       owner,
       branch,
       repo,
-      path: join(path, 'data.json'),
+      path: pathJoin(path, 'data.json'),
       sha,
       message: `Sync dataJson by PicGo at ${getNow()}`,
       content: Buffer.from(JSON.stringify(data)).toString('base64')
@@ -103,11 +107,12 @@ class Octo {
   }
   createDataJson (data) {
     const { owner, repo, branch, path } = this
+    console.log(pathJoin(path, 'data.json'))
     return this.octokit.repos.createFile({
       owner,
       repo,
       branch,
-      path: join(path, 'data.json'),
+      path: pathJoin(path, 'data.json'),
       message: `Sync dataJson by PicGo at ${getNow()}`,
       content: Buffer.from(JSON.stringify(data)).toString('base64')
     })
@@ -118,7 +123,7 @@ class Octo {
     const d = await this.octokit.repos.createFile({
       owner,
       repo,
-      path: join(path, fileName),
+      path: pathJoin(path, fileName),
       message: `Upload ${fileName} by picGo - ${getNow()}`,
       content: img.base64Image || Buffer.from(img.buffer).toString('base64'),
       branch
@@ -145,7 +150,7 @@ class Octo {
   parseUrl (fileName) {
     const { owner, repo, path, customUrl, branch } = this
     if (customUrl) {
-      return urlJoin(customUrl, repo, path, fileName)
+      return urlJoin(customUrl, path, fileName)
     }
     return urlJoin(`https://raw.githubusercontent.com/`, owner, repo, branch, path, fileName)
   }

@@ -43,6 +43,7 @@
   "dependencies": {
     "@octokit/rest": "^16.8.1",
     "dayjs": "^1.8.0",
+    "slash": "^2.0.0",
     "url-join": "^4.0.0"
   }
 }
