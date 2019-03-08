@@ -1,3 +1,7 @@
+## [1.1.1](https://github.com/zWingz/picgo-plugin-github-plus/compare/1.1.2...1.1.1) (2019-03-08)
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/zWingz/picgo-plugin-github-plus/compare/1.1.0...1.1.1) (2019-01-21)
 
@@ -6,6 +10,9 @@
 
 * 🐛 fix origin download url ([b6205b2](https://github.com/zWingz/picgo-plugin-github-plus/commit/b6205b2)), closes [#1](https://github.com/zWingz/picgo-plugin-github-plus/issues/1)
 
+### Breaking change
+
+* You need to set up a `url` that can access the `repo`!
 
 
 <a name="1.1.0"></a>
@@ -50,6 +57,3 @@
 
 * 🎸 init project ([e3260c4](https://github.com/zWingz/picgo-plugin-github-plus/commit/e3260c4))
 * 🎸 release ([114dcfa](https://github.com/zWingz/picgo-plugin-github-plus/commit/114dcfa))
-
-
-
