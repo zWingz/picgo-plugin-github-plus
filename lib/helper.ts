@@ -1,5 +1,8 @@
 import dayjs from 'dayjs'
 import { ImgType, ImgZipType } from './interface'
+import slash from 'normalize-path'
+import { join } from 'path'
+
 export function getNow () {
   return dayjs().format('YYYY-MM-DD hh:mm:ss')
 }
@@ -29,4 +32,8 @@ export function unzip (
     imgUrl: '',
     type: ''
   }
+}
+
+export function pathJoin (...arg) {
+  return slash(join.apply(null, arg))
 }

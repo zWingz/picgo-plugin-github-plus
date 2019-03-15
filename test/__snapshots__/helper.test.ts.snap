@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test getNow test getNow: now 1`] = `"2019-02-22 12:10:20"`;
+
+exports[`test helper test unzip: unzip 1`] = `
+Object {
+  "extname": "filename",
+  "fileName": "filename",
+  "height": 1000,
+  "id": "fdsafdsafdsafasdf",
+  "imgUrl": "",
+  "sha": "fooiuiouiouio",
+  "type": "",
+  "width": 1000,
+}
+`;
+
+exports[`test helper test zip: zip 1`] = `
+Object {
+  "f": "filename",
+  "h": 1000,
+  "id": "fdsafdsafdsafasdf",
+  "s": "fooiuiouiouio",
+  "w": 1000,
+}
+`;
