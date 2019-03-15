@@ -20,6 +20,7 @@
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
     "clean": "rm -rf dist",
+    "test": "jest",
     "pub": "yarn clean && yarn build && release-it",
     "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
@@ -31,19 +32,39 @@
   "author": "zzwing <zhengzwing@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^24.0.11",
     "@types/node": "^10.10.1",
-    "electron": "^4.0.1",
-    "nodemon": "^1.18.9",
+    "electron": "^4.1.0",
+    "jest": "^24.5.0",
+    "nock": "^10.0.6",
     "picgo": "^1.2.1",
     "release-it": "^9.8.1",
+    "ts-jest": "^24.0.0",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.1.0",
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "@octokit/rest": "^16.8.1",
+    "@octokit/rest": "^16.18.1",
     "dayjs": "^1.8.0",
-    "slash": "^2.0.0",
+    "normalize-path": "^3.0.0",
     "url-join": "^4.0.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "collectCoverageFrom": [
+      "lib/*.ts"
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/*.test.(ts|tsx)"
+    ]
   }
 }

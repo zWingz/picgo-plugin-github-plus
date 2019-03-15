@@ -16,7 +16,6 @@ function initOcto (ctx: picgo) {
     throw new Error("Can't find github-plus config")
   }
   const ins = getIns(options)
-  ins.authenticate()
   return ins
 }
 
@@ -150,7 +149,6 @@ async function onRemove (files: ImgType[]) {
   if (rms.length === 0) return
   const self: picgo = this
   const ins = initOcto(self)
-  ins.authenticate()
   const fail = []
   for (let i = 0; i < rms.length; i++) {
     const each = rms[i]

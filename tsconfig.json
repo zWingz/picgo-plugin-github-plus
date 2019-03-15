@@ -9,6 +9,7 @@
     "target": "es2017",
     "declaration": true,
     "outDir": "dist",
+    "types": ["jest"],
     // It's shit.
     // "baseUrl": ".",
     // "paths": {

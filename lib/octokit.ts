@@ -1,24 +1,18 @@
 import Octokit from '@octokit/rest'
-import { getNow } from './helper'
+import { getNow, pathJoin } from './helper'
 import { PluginConfig, ImgType } from './interface'
 import { join } from 'path'
 import urlJoin from 'url-join'
 import { ImgInfo } from 'picgo/dist/utils/interfaces'
-import slash from 'slash'
-// export default octokit
 
-function pathJoin (...arg) {
-  return slash(join.apply(null, arg))
-}
-
-class Octo {
+export class Octo {
   owner: string = ''
   repo: string = ''
   branch: string = ''
   path: string = ''
   token: string = ''
   customUrl: string = ''
-  octokit = new Octokit()
+  octokit: Octokit = null
   constructor ({
     repo,
     branch,
@@ -34,11 +28,8 @@ class Octo {
     this.path = path
     this.token = token
     this.customUrl = customUrl
-  }
-  authenticate () {
-    this.octokit.authenticate({
-      type: 'token',
-      token: this.token
+    this.octokit = new Octokit({
+      auth: token ? `token ${token}` : undefined
     })
   }
 
@@ -66,9 +57,9 @@ class Octo {
     return { sha, tree }
   }
   async getDataJson (): Promise<{
-    lastSync: string;
-    data: any[];
-    sha?: string;
+    lastSync: string
+    data: any[]
+    sha?: string
   }> {
     const { owner, repo } = this
     const defaultRet = {
@@ -107,7 +98,6 @@ class Octo {
   }
   createDataJson (data) {
     const { owner, repo, branch, path } = this
-    console.log(pathJoin(path, 'data.json'))
     return this.octokit.repos.createFile({
       owner,
       repo,
@@ -118,6 +108,7 @@ class Octo {
     })
   }
   async upload (img: ImgInfo) {
+    /* istanbul ignore next */
     const { owner, repo, branch, path = '' } = this
     const { fileName } = img
     const d = await this.octokit.repos.createFile({
@@ -134,6 +125,7 @@ class Octo {
         sha: d.data.content.sha
       }
     }
+    /* istanbul ignore next */
     throw d
   }
   removeFile (img: ImgType) {
@@ -152,7 +144,14 @@ class Octo {
     if (customUrl) {
       return urlJoin(customUrl, path, fileName)
     }
-    return urlJoin(`https://raw.githubusercontent.com/`, owner, repo, branch, path, fileName)
+    return urlJoin(
+      `https://raw.githubusercontent.com/`,
+      owner,
+      repo,
+      branch,
+      path,
+      fileName
+    )
   }
 }
 
@@ -160,5 +159,12 @@ let ins: Octo = null
 
 export function getIns (config: PluginConfig): Octo {
   if (ins) return ins
-  return new Octo(config)
+  ins = new Octo(config)
+  return ins
+}
+
+/* istanbul ignore next */
+export function clearIns () {
+  // just for test
+  ins = null
 }
