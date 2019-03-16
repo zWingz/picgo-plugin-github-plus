@@ -4,7 +4,7 @@ plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 
 - Sync `uploaded` with github use `data.json`
 - Sync `remove` action
-- Pull `img` from github
+- Pull `img` info from github
 
 **Don't edit `lastSync`**
 
@@ -16,13 +16,11 @@ plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 - branch: default `master`
 - token: github `access token`
 - path: file path
-- customUrl: used to insead of `https://raw.githubusercontent.com`, eg: `${customUrl}/repoName/path/filename.jpg`
+- customUrl: used to insead of `https://raw.githubusercontent.com/:owner/:repo/:branch/:path/:filename`, eg: `${customUrl}/path/filename.jpg`
 
-#### config.CustomUrl
-
-  you need to open `gh-pages` at `mater` to support `customUrl`
+makesure the `customUrl` can access your `repo`
 
 ### Menu
 
-- Sync github: sync `data.json` (sync `latest update`)
-- Pull github: Pull `img` from github (**force** and **ignore** local `data.json`)
+- Sync github: Just sync `data.json` (use latest updated)
+- Pull github: Pull all `img` info from github (**force** and **override** local `data.json`)
