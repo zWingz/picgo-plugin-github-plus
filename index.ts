@@ -3,10 +3,7 @@ import { Notification } from 'electron'
 import { getIns } from './lib/octokit'
 import { PluginConfig } from 'picgo/dist/utils/interfaces'
 import { getNow, zip, unzip } from './lib/helper'
-import {
-  ImgType,
-  PluginConfig as PlusConfig
-} from './lib/interface'
+import { ImgType, PluginConfig as PlusConfig } from './lib/interface'
 const PluginName = 'picgo-plugin-github-plus'
 const UploaderName = 'githubPlus'
 
@@ -99,7 +96,9 @@ const PullGithubMenu = {
             imgUrl: octokit.parseUrl(each.path)
           }
         })
-      const uploaded: ImgType[] = ctx.getConfig('uploaded').filter(each => each.type !== UploaderName)
+      const uploaded: ImgType[] = ctx
+        .getConfig('uploaded')
+        .filter(each => each.type !== UploaderName)
       uploaded.unshift(...imgList)
       ctx.saveConfig({
         uploaded,
@@ -114,32 +113,49 @@ const PullGithubMenu = {
   }
 }
 
-const guiMenu = (ctx) => {
+const guiMenu = ctx => {
   return [SyncGithubMenu, PullGithubMenu]
 }
 
 const handle = async (ctx: picgo) => {
   let output = ctx.output
   const octokit = initOcto(ctx)
-  for (let i in output) {
-    try {
-      const img = output[i]
-      const { imgUrl, sha } = await octokit.upload(img)
-      img.imgUrl = imgUrl
-      img.sha = sha
-    } catch (e) {
-      ctx.emit('notification', {
-        title: 'GithubPlus: 上传失败',
-        body: e.message,
-        text: ''
-      })
+  const ret = []
+  const len = output.length
+  let index = 0
+  async function up () {
+    const img = output[index]
+    if (index >= len) return
+    if (!img) {
+      index++
+      return up()
     }
+    return octokit
+      .upload(img)
+      .then(({ imgUrl, sha }) => {
+        img.imgUrl = imgUrl
+        img.sha = sha
+        ret.push(img)
+        index++
+        return up()
+      })
+      .catch(e => {
+        ctx.emit('notification', {
+          title: 'GithubPlus: 上传失败',
+          body: e.message,
+          text: ''
+        })
+        index++
+        return up()
+      })
   }
+  await up()
   ctx.saveConfig({
     [PluginName]: {
       lastSync: getNow()
     }
   })
+  ctx.output = ret
   return ctx
 }
 
