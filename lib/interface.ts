@@ -19,8 +19,5 @@ export type ImgType = {
 
 export type ImgZipType = {
   f: string,
-  w?: number,
-  h?: number,
-  id: string,
-  s?: string
+  s: string
 }
