@@ -87,7 +87,6 @@ const PullGithubMenu = {
         .map(each => {
           const unzipImg = unzip({
             f: each.path,
-            id: each.sha,
             s: each.sha
           })
           return {
