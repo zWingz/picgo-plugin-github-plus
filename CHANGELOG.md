@@ -1,3 +1,17 @@
+## [1.1.6](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.5...v1.1.6) (2019-03-20)
+
+
+### Bug Fixes
+
+* 🐛 fix unzip call ([3e3bec1](https://github.com/zWingz/picgo-plugin-github-plus/commit/3e3bec1))
+
+
+### Performance Improvements
+
+* ⚡️ rm zip key-value ([959190d](https://github.com/zWingz/picgo-plugin-github-plus/commit/959190d))
+
+
+
 ## [1.1.5](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.4...v1.1.5) (2019-03-16)
 
 
