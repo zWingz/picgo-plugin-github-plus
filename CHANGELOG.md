@@ -1,3 +1,12 @@
+## [1.1.7](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.6...v1.1.7) (2019-05-11)
+
+
+### Features
+
+* **Config:** create new instance when config changed ([39bcb99](https://github.com/zWingz/picgo-plugin-github-plus/commit/39bcb99))
+
+
+
 ## [1.1.6](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.5...v1.1.6) (2019-03-20)
 
 
