@@ -156,9 +156,11 @@ export class Octo {
 }
 
 let ins: Octo = null
-
+let _cacheOption: string = ''
 export function getIns (config: PluginConfig): Octo {
-  if (ins) return ins
+  const str = JSON.stringify(config)
+  if (ins && _cacheOption === str) return ins
+  _cacheOption = str
   ins = new Octo(config)
   return ins
 }
