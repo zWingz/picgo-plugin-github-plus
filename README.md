@@ -20,6 +20,8 @@ plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 
 makesure the `customUrl` can access your `repo`
 
+![](https://zwing.site/imgur/57566062-a7752000-73fa-11e9-99c1-e3a0562bc41d.png)
+
 ### Menu
 
 - Sync github: Just sync `data.json` (use latest updated)
