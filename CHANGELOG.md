@@ -1,3 +1,12 @@
+## [1.1.8](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.7...v1.1.8) (2019-05-31)
+
+
+### Features
+
+* **Picgo:** add logger ([5973a11](https://github.com/zWingz/picgo-plugin-github-plus/commit/5973a11))
+
+
+
 ## [1.1.7](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.6...v1.1.7) (2019-05-11)
 
 
