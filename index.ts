@@ -1,12 +1,10 @@
 import picgo from 'picgo'
-import { Notification } from 'electron'
 import { getIns } from './lib/octokit'
 import { PluginConfig } from 'picgo/dist/utils/interfaces'
 import { getNow, zip, unzip } from './lib/helper'
 import { ImgType, PluginConfig as PlusConfig } from './lib/interface'
 const PluginName = 'picgo-plugin-github-plus'
 const UploaderName = 'githubPlus'
-
 function initOcto (ctx: picgo) {
   const options: PlusConfig = ctx.getConfig('picBed.githubPlus')
   if (!options) {
@@ -16,21 +14,21 @@ function initOcto (ctx: picgo) {
   return ins
 }
 
-function notic (title, body?: string) {
-  const notification = new Notification({
+function notic (showNotification: Function, title: string, body?: string) {
+  showNotification({
     title: 'GithubPlus: ' + title,
     body
   })
-  notification.show()
 }
 
 const SyncGithubMenu = {
   label: 'Sync github',
-  async handle (ctx: picgo) {
+  async handle (ctx: picgo, { showNotification }) {
     const octokit = initOcto(ctx)
-    notic('Sync github...')
+    notic(showNotification, 'Sync github...')
     const githubDataJson = await octokit.getDataJson().catch(e => {
-      notic('Error at load dataJson', e.message)
+      ctx.log.error(e)
+      notic(showNotification, 'Error at load dataJson', e.message)
       throw e
     })
     const uploaded: ImgType[] = ctx.getConfig('uploaded')
@@ -50,7 +48,8 @@ const SyncGithubMenu = {
           await octokit.createDataJson(localDataJson)
         }
       } catch (e) {
-        notic('Error at sync github', e.message)
+        ctx.log.error(e)
+        notic(showNotification, 'Error at sync github', e.message)
         throw e
       }
     } else {
@@ -71,15 +70,15 @@ const SyncGithubMenu = {
         }
       })
     }
-    notic('Sync successful', 'Succeed to sync github')
+    notic(showNotification, 'Sync successful', 'Succeed to sync github')
   }
 }
 
 const PullGithubMenu = {
   label: 'Pull github',
-  handle: async (ctx: picgo) => {
+  handle: async (ctx: picgo, { showNotification }) => {
     const octokit = initOcto(ctx)
-    notic('Pull img from github...')
+    notic(showNotification, 'Pull img from github...')
     try {
       const { tree } = await octokit.getPathTree()
       const imgList: ImgType[] = tree
@@ -105,9 +104,10 @@ const PullGithubMenu = {
           lastSync: getNow()
         }
       })
-      notic('Pull successful', 'Succeed to pull from github')
+      notic(showNotification, 'Pull successful', 'Succeed to pull from github')
     } catch (e) {
-      notic('Error at pull from github', e.message)
+      ctx.log.error(e)
+      notic(showNotification, 'Error at pull from github', e.message)
     }
   }
 }
@@ -139,6 +139,7 @@ const handle = async (ctx: picgo) => {
         return up()
       })
       .catch(e => {
+        ctx.log.error(e)
         ctx.emit('notification', {
           title: 'GithubPlus: 上传失败',
           body: e.message,
@@ -158,7 +159,7 @@ const handle = async (ctx: picgo) => {
   return ctx
 }
 
-async function onRemove (files: ImgType[]) {
+async function onRemove (files: ImgType[], { showNotification }) {
   // console.log('1111 =?', this)
   const rms = files.filter(each => each.type === UploaderName)
   if (rms.length === 0) return
@@ -167,7 +168,8 @@ async function onRemove (files: ImgType[]) {
   const fail = []
   for (let i = 0; i < rms.length; i++) {
     const each = rms[i]
-    await ins.removeFile(each).catch(() => {
+    await ins.removeFile(each).catch((e) => {
+      self.log.error(e)
       fail.push(each)
     })
   }
@@ -183,6 +185,7 @@ async function onRemove (files: ImgType[]) {
     })
   }
   notic(
+    showNotification,
     '删除提示',
     fail.length === 0 ? '成功同步删除' : `删除失败${fail.length}个`
   )
