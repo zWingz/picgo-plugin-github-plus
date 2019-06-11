@@ -1,7 +1,6 @@
 import Octokit from '@octokit/rest'
 import { getNow, pathJoin } from './helper'
 import { PluginConfig, ImgType } from './interface'
-import { join } from 'path'
 import urlJoin from 'url-join'
 import { ImgInfo } from 'picgo/dist/utils/interfaces'
 
@@ -134,7 +133,7 @@ export class Octo {
       repo,
       owner,
       branch,
-      path: join(path, img.fileName),
+      path: urlJoin(path, img.fileName),
       message: `Deleted ${img.fileName} by PicGo - ${getNow()}`,
       sha: img.sha
     })
