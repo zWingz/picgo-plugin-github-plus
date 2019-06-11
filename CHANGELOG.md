@@ -1,3 +1,12 @@
+## [1.1.9](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.8...v1.1.9) (2019-06-11)
+
+
+### Bug Fixes
+
+* **Remove:** fix remove path, closed [#9](https://github.com/zWingz/picgo-plugin-github-plus/issues/9) ([95fc7aa](https://github.com/zWingz/picgo-plugin-github-plus/commit/95fc7aa))
+
+
+
 ## [1.1.8](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.7...v1.1.8) (2019-05-31)
 
 
