@@ -22,10 +22,10 @@ function notic (showNotification: Function, title: string, body?: string) {
 }
 
 const SyncGithubMenu = {
-  label: 'Sync github',
+  label: 'Sync origin',
   async handle (ctx: picgo, { showNotification }) {
     const octokit = initOcto(ctx)
-    notic(showNotification, 'Sync github...')
+    notic(showNotification, 'Sync origin...')
     const githubDataJson = await octokit.getDataJson().catch(e => {
       ctx.log.error(e)
       notic(showNotification, 'Error at load dataJson', e.message)
@@ -49,7 +49,7 @@ const SyncGithubMenu = {
         }
       } catch (e) {
         ctx.log.error(e)
-        notic(showNotification, 'Error at sync github', e.message)
+        notic(showNotification, 'Error at sync origin', e.message)
         throw e
       }
     } else {
@@ -70,15 +70,15 @@ const SyncGithubMenu = {
         }
       })
     }
-    notic(showNotification, 'Sync successful', 'Succeed to sync github')
+    notic(showNotification, 'Sync successful', 'Succeed to sync origin')
   }
 }
 
 const PullGithubMenu = {
-  label: 'Pull github',
+  label: 'Pull origin',
   handle: async (ctx: picgo, { showNotification }) => {
     const octokit = initOcto(ctx)
-    notic(showNotification, 'Pull img from github...')
+    notic(showNotification, 'Pull img from origin...')
     try {
       const { tree } = await octokit.getPathTree()
       const imgList: ImgType[] = tree
@@ -104,10 +104,10 @@ const PullGithubMenu = {
           lastSync: getNow()
         }
       })
-      notic(showNotification, 'Pull successful', 'Succeed to pull from github')
+      notic(showNotification, 'Pull successful', 'Succeed to pull from origin')
     } catch (e) {
       ctx.log.error(e)
-      notic(showNotification, 'Error at pull from github', e.message)
+      notic(showNotification, 'Error at pull from origin', e.message)
     }
   }
 }
@@ -226,6 +226,19 @@ const config = (ctx: picgo): PluginConfig[] => {
       type: 'input',
       default: userConfig.customUrl || '',
       required: false
+    },
+    {
+      name: 'origin',
+      type: 'list',
+      default: userConfig.type || 'github',
+      required: true,
+      choices: [{
+        name: 'github',
+        value: 'github'
+      }, {
+        name: 'gitee',
+        value: 'gitee'
+      }]
     }
   ]
   return conf

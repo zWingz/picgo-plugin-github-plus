@@ -3,6 +3,8 @@ import { getNow, pathJoin } from './helper'
 import { PluginConfig, ImgType } from './interface'
 import urlJoin from 'url-join'
 import { ImgInfo } from 'picgo/dist/utils/interfaces'
+const GithubUrl = 'https://api.github.com'
+const GiteeUrl = 'https://gitee.com/api/v5'
 
 export class Octo {
   owner: string = ''
@@ -12,12 +14,14 @@ export class Octo {
   token: string = ''
   customUrl: string = ''
   octokit: Octokit = null
+  origin: PluginConfig['origin']
   constructor ({
     repo,
     branch,
     path = '',
     token,
-    customUrl = ''
+    customUrl = '',
+    origin = 'github'
   }: PluginConfig) {
     const [owner, r] = repo.split('/')
     if (!r) throw new Error('Error in repo name')
@@ -27,11 +31,15 @@ export class Octo {
     this.path = path
     this.token = token
     this.customUrl = customUrl
+    this.origin = origin
     this.octokit = new Octokit({
+      baseUrl: origin === 'github' ? GithubUrl : GiteeUrl,
       auth: token ? `token ${token}` : undefined
     })
   }
-
+  get isGithub() {
+    return this.origin === 'github'
+  }
   async getTree (sha): Promise<{ path: string; sha: string }[]> {
     const { owner, repo } = this
     const d = await this.octokit.git.getTree({
@@ -54,6 +62,14 @@ export class Octo {
       tree = await this.getTree(sha)
     }
     return { sha, tree }
+  }
+  createFile(params) {
+    const { isGithub } = this
+    const request = this.octokit.request(`/repos/:owner/:repo/contents/:path`, {
+      method: isGithub ? 'PUT' : 'POST',
+      ...params
+    })
+    return request
   }
   async getDataJson (): Promise<{
     lastSync: string
@@ -97,7 +113,7 @@ export class Octo {
   }
   createDataJson (data) {
     const { owner, repo, branch, path } = this
-    return this.octokit.repos.createFile({
+    return this.createFile({
       owner,
       repo,
       branch,
@@ -110,7 +126,7 @@ export class Octo {
     /* istanbul ignore next */
     const { owner, repo, branch, path = '' } = this
     const { fileName } = img
-    const d = await this.octokit.repos.createFile({
+    const d = await this.createFile({
       owner,
       repo,
       path: pathJoin(path, fileName),
@@ -139,18 +155,19 @@ export class Octo {
     })
   }
   parseUrl (fileName) {
-    const { owner, repo, path, customUrl, branch } = this
+    const { origin, owner, repo, path, customUrl, branch } = this
     if (customUrl) {
       return urlJoin(customUrl, path, fileName)
     }
-    return urlJoin(
+    return origin === 'github' ? urlJoin(
       `https://raw.githubusercontent.com/`,
       owner,
       repo,
       branch,
       path,
       fileName
-    )
+    ) : urlJoin(`https://gitee.com`, owner, repo, 'raw', branch, path, fileName)
+    // https://gitee.com/zwing/test/raw/master/57566062-a7752000-73fa-11e9-99c1-e3a0562bc41d.png
   }
 }
 

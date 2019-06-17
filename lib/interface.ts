@@ -4,6 +4,7 @@ export interface PluginConfig {
   path?: string,
   token: string,
   customUrl?: string
+  origin?: 'github' | 'gitee'
 }
 
 export type ImgType = {
