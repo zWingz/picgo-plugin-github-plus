@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.9...v1.2.0) (2019-06-17)
+
+
+### Features
+
+* 🎸 support for gitee ([b84ea0d](https://github.com/zWingz/picgo-plugin-github-plus/commit/b84ea0d))
+
+
+
 ## [1.1.9](https://github.com/zWingz/picgo-plugin-github-plus/compare/v1.1.8...v1.1.9) (2019-06-11)
 
 
