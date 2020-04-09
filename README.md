@@ -31,3 +31,7 @@ makesure the `customUrl` can access your `repo`
 ## Support gitee
 
 由于`gitee`文件大小有`1mb`限制, 所以超过`1mb`的文件无法通过外链获取
+
+## Related
+
+- [Hyrule](https://github.com/zWingz/Hyrule): A electron app to manage issues and images from github
