@@ -82,7 +82,7 @@ const PullGithubMenu = {
     try {
       const { tree } = await octokit.getPathTree()
       const imgList: ImgType[] = tree
-        .filter(each => /\.(jpg|png|jpeg|gif)$/.test(each.path))
+        .filter(each => /\.(jpg|png|jpeg|gif|webp)$/.test(each.path))
         .map(each => {
           const unzipImg = unzip({
             f: each.path,
