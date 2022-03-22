@@ -31,7 +31,8 @@ const SyncGithubMenu = {
       notic(showNotification, 'Error at load dataJson', e.message)
       throw e
     })
-    const uploaded: ImgType[] = ctx.getConfig('uploaded')
+    // FIXME: 新版本可能拿不到uploaded, 加个默认
+    const uploaded: ImgType[] = ctx.getConfig('uploaded') || []
     const localDataJson = {
       data: uploaded.filter(each => each.type === UploaderName).map(zip),
       lastSync: (ctx.getConfig(PluginName) || {}).lastSync
@@ -70,7 +71,7 @@ const SyncGithubMenu = {
         }
       })
     }
-    notic(showNotification, 'Sync successful', 'Succeed to sync origin')
+    notic(showNotification, 'Sync successful', 'Succeed to sync origin. Please reload PicGo')
   }
 }
 
@@ -94,8 +95,8 @@ const PullGithubMenu = {
             imgUrl: octokit.parseUrl(each.path)
           }
         })
-      const uploaded: ImgType[] = ctx
-        .getConfig('uploaded')
+      const uploaded: ImgType[] = (ctx
+        .getConfig('uploaded') || [])
         .filter(each => each.type !== UploaderName)
       uploaded.unshift(...imgList)
       ctx.saveConfig({
@@ -104,7 +105,7 @@ const PullGithubMenu = {
           lastSync: getNow()
         }
       })
-      notic(showNotification, 'Pull successful', 'Succeed to pull from origin')
+      notic(showNotification, 'Pull successful', 'Succeed to pull from origin, Please reload PicGo')
     } catch (e) {
       ctx.log.error(e)
       notic(showNotification, 'Error at pull from origin', e.message)
@@ -175,7 +176,7 @@ async function onRemove (files: ImgType[], { showNotification }) {
   }
   if (fail.length) {
     // 确保主线程已经把文件从data.json删掉
-    const uploaded: ImgType[] = self.getConfig('uploaded')
+    const uploaded: ImgType[] = self.getConfig('uploaded') || []
     uploaded.unshift(...fail)
     self.saveConfig({
       uploaded,
